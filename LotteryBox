@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>籤筒</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<style>
+  .text {
+  color: #484873;
+}
+.box {
+  margin: 0 auto;
+  border: 1px solid gray;
+  border-radius: 10px;
+  border-color: #484873;
+}
+.box1 {
+  margin: 0 10px;
+}
+.boxData {
+  margin: 20px 15px;
+  border-top: 1.2px solid #484873;
+/*   border-bottom: 1.2px solid #484873; */
+}
+.dataHide {
+  display: none;
+  font-size:5pt;
+  width: 800px;
+  height: 250px;
+}
+.button {
+  text-align: center;
+  color: #484873;
+  font-size: 11pt;
+  height: 26px;
+  border: 1px solid #484873;
+  border-radius: 5px;
+  border-color: #484873;
+}
+.buttonW {
+  text-align: center;
+  color: #484873;
+  font-size: 11pt;
+  height: 23px;
+  border: 0.5px dotted #484873;
+  border-radius: 5px;
+  border-color: #484873;
+}
+.text {
+  color: #484873;
+}
+.upload {
+  color: #484873;
+  font-size: 11pt;
+  border: 0.7px solid black;
+  border-radius: 5px;
+  border-color: #484873;
+}
+.buttonF {
+  margin-bottom: 20px;
+  width: 52px;
+  height: 52px;
+}
+.buttonS {
+  background-color: #e4e3fc;
+}
+.success {
+  margin-left: 10px;
+  font-size: 8pt;
+  color: green;
+}
+.clearfix {
+  clear: both;
+}
+
+.left,.left2,.center,.right {
+  height: 120px;
+  margin: 8px 2px;
+  float: left;
+  padding: 15px;
+}
+.left,.left2 {
+  width: 30px;
+}
+.center {
+  margin-right: 10px;
+  width: 60px;
+}
+.right {
+  width: 260px;
+}
+.exe {
+  margin: 20px 10px;
+}
+.out {
+  display: none;
+  width: 80%;
+  background-color: #ecebff;
+  margin: 20px auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 50px;
+}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="box1"> 
+    <div class="left"> 
+      <button id="buttonLottery" class="button buttonF buttonS">抽籤</button>
+      <button id="buttonReset" class="button buttonF">重置籤筒</button>
+    </div>
+    <div class="left2">
+      <button id="buttonRandom" class="button buttonF">隨機排序</button>
+      <button id="buttonRandomD" class="button buttonF">分組</button> 
+    </div> 
+    <div class="center">
+      <span class="text">抽出後<br>放回</span>
+      <input id="checkbox" type="checkbox">
+    </div>
+    <div class="right"> 
+      <input class="buttonW" type="text" id="in" placeholder="請貼上學生資料" style="width: 120px">
+      <button id="go" class="button">設定</button><br>
+      <span id="success" class="success"></span>
+      <p>
+      <button id="myButton" class="button">下載</button>
+      <button id="myButtonG" class="button">下載分組</button>          <span class="text"> 每組人數：</span><input type="number" id="numGroup" class="buttonW" placeholder="" min="2" max="10" style="width: 40px; color: #477f43; font-size: 18px; font-weight:bold" value="3"><p>
+      <input type="file" id="myFile" class="upload"> 
+    </div> 
+  </div>
+  
+  <div class="clearfix"></div>
+  <div class="boxData"> 
+    <div class="dataHide">
+      <span id="listOri"></span> 
+      <hr>
+      <span id="list"></span>    
+    </div>
+    <div id="output" class="out"></div>
+  </div>
+</div>
+<script>
+  const group = [
+  'Person1-1／Person1-2／Person1-3／Person1-4／Person1-5／Person1-6／Person1-7／Person1-8／Person1-9', 'Person2-1／Person2-2／Person2-3／Person2-4／Person2-5／Person2-6／Person2-7／Person2-8／Person2-9',
+  'Person3-1／Person3-2／Person3-3／Person3-4／Person3-5／Person3-6／Person3-7／Person3-8／Person3-9',
+  'A／B／C／D／E'
+]
+
+//  上傳文檔並取得文字內容
+$("#myFile").on("change", function() {
+  // 取得檔案內容
+  var reader = new FileReader();
+  reader.readAsText( this.files[0] );
+  
+  // 監聽檔案讀取完成的事件
+  reader.onload = function() {
+    var text = reader.result;
+    $("#list").text(text);
+  };
+});
+
+//  下載文檔
+// 監聽按鈕點擊事件
+$("#myButton").click(function() {
+  // 顯示下載連結
+  var text = $("#list").text();
+  var blob = new Blob([text], {type: "text/plain"});
+
+  // 建立一個下載連結
+  var link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  var now = (new Date()).toLocaleString();
+  link.download = "籤筒_" + now + ".txt";
+  link.click();
+});
+$("#myButtonG").click(function() {
+  // 顯示下載連結
+  var text = $("#output").text();
+  var blob = new Blob([text], {type: "text/plain"});
+
+  // 建立一個下載連結
+  var link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  var now = (new Date()).toLocaleString();
+  link.download = "分組_" + now + ".txt";
+  link.click();
+});
+
+//  checkbox 預設勾選
+$("#checkbox").prop("checked", true);
+//  
+document.getElementById("go").addEventListener("click", function() {
+  var dataInput = $("#in").val();
+  var data = dataInput.replace(/ /g, '／').replace(/\t/g,'_');
+  $("#listOri").text(data);
+  $("#list").text(data);
+  
+  var now = (new Date()).toLocaleString();
+  $("#success").text('設定完成！'+ now);
+  
+});
+  // var output = data.join('<br>');
+  //  檢視是否確實處理好陣列
+  // $("#list").html(data[3][3]);   
+
+document.getElementById("buttonLottery").addEventListener("click", function() {
+  $("#output").show();
+  var check = $("#checkbox").prop("checked");
+  if ( check == true ){
+    var input = $("#list").text();
+     // 如果空了
+    if ( input == '' ){
+      $("#output").html('籤筒已空！');
+      return;
+    }
+    var data = input.split('／');
+    for ( var i in data ){
+      data[i] = data[i].split('_');
+    }
+      var ran = Math.floor(Math.random() * data.length);   //  0-based
+      $("#output").html( data[ran].join('／') );
+  }
+  else if ( check == false ){
+    var input = $("#list").text();
+     // 如果空了
+    if ( input == '' ){
+      $("#output").html('籤筒已空！');
+      return;
+    }
+    var data = input.split('／');
+    for ( var i in data ){
+      data[i] = data[i].split('_');
+    }
+    var ran = Math.floor(Math.random() * data.length);   //  0-based
+    if ( data.length == 1 ){
+      $("#output").html(data[ran] + '<br>' + '籤筒已空！');
+    }
+    else {
+      $("#output").html( data[ran].join('／') );
+    }
+    data.splice(ran, 1);
+    
+    for ( var j in data ){
+      data[j] = data[j].join('_');
+    }
+    var after = data.join('／');
+    $("#list").text(after);
+  }
+});
+
+document.getElementById("buttonReset").addEventListener("click", function() {
+  $("#output").show();
+  $("#list").text($("#listOri").text() );
+});
+
+document.getElementById("buttonRandom").addEventListener("click", function() {
+  $("#output").show();
+  var input = $("#list").text();
+    // 如果空了
+  if ( input == '' ){
+    $("#output").html('籤筒已空！');
+    return;
+  }
+  
+  var data = input.split('／');
+  for ( var i in data ){
+    data[i] = data[i].split('_');
+  }
+  //  隨機產生數序
+  var arr = [];
+
+  while ( arr.length < data.length){ 
+    var num = Math.floor(Math.random() * data.length);
+
+    // 檢查隨機數是否已經存在於陣列中
+    if (!arr.includes(num)) {
+      // 如果隨機數不存在於陣列中，則加入到陣列中
+      arr.push(num);
+    } 
+  }
+ 
+  var arrX = [];
+  for ( var j = 0; j < arr.length; j++ ){
+    arrX[j] = '#' + (j+1) + '____' + data[ arr[j] ].join('／');
+  }
+  var final = arrX.join('<br>');
+  $("#output").html(final);
+});
+
+//  原排序下載，先挪用作為隨機分組
+// document.getElementById("buttonRandomD").addEventListener("click", function() {
+//   // 顯示下載連結
+//   // alert('!');
+//   var text = $("#output").text();
+//   var blob = new Blob([text], {type: "text/plain"});
+
+//   // 建立一個下載連結
+//   var link = document.createElement("a");
+//   link.href = window.URL.createObjectURL(blob);
+//   var now = (new Date()).toLocaleString();
+
+//   link.download = "排序下載_" + now + ".txt";
+//   link.click();
+// });
+
+document.getElementById("buttonRandomD").addEventListener("click", function() {
+  $("#output").show();
+  var input = $("#list").text();
+    // 如果空了
+  if ( input == '' ){
+    $("#output").html('籤筒已空！');
+    return;
+  }
+  
+  var data = input.split('／');
+  for ( var i in data ){
+    data[i] = data[i].split('_');
+  }
+  //  隨機產生數序
+  var arr = [];
+
+  while ( arr.length < data.length){ 
+    var num = Math.floor(Math.random() * data.length);
+
+    // 檢查隨機數是否已經存在於陣列中
+    if (!arr.includes(num)) {
+      // 如果隨機數不存在於陣列中，則加入到陣列中
+      arr.push(num);
+    } 
+  }
+ 
+  var arrX = [];
+  var numGr = $("#numGroup").val();
+  for ( var j = 0; j < arr.length; j++ ){
+    if ( j < numGr ){
+      arrX[j] = '【Ａ】' + data[ arr[j] ].join('／');
+    }
+    else if ( j >= numGr && j < numGr*2 ){ 
+      arrX[j] = '【Ｂ】' + data[ arr[j] ].join('／');
+    }
+    else if ( j >= numGr*2 && j < numGr*3 ){ 
+      arrX[j] = '【Ｃ】' + data[ arr[j] ].join('／');
+    }
+    else if ( j >= numGr*3 && j < numGr*4 ){ 
+      arrX[j] = '【Ｄ】' + data[ arr[j] ].join('／');
+    }
+    else if ( j >= numGr*4 && j < numGr*5 ){
+      arrX[j] = '【Ｅ】' + data[ arr[j] ].join('／');
+    }
+    else if ( j >= numGr*5 && j < numGr*6 ){
+      arrX[j] = '【Ｆ】' + data[ arr[j] ].join('／');
+    } 
+  }
+  var final = arrX.join('<br>');
+  $("#output").html(final);
+});
+
+
+
+//  快速鍵設定
+$(document).keydown(function(event) {
+  // 檢查按下的鍵是否為 r
+  if (event.which === 80) {
+    // 取得所有 checkbox
+    var checkboxes = $("input[type='checkbox']");
+
+    // 遍歷 checkbox
+    checkboxes.each(function() {
+      // 將 checkbox 的 checked 屬性反轉
+      $(this).prop("checked", !$(this).prop("checked"));
+    });
+  }
+  else if (event.which === 70) {
+    var button = $("#buttonLottery");
+    button.click();
+  }
+  else if (event.which === 68) {
+    var button = $("#myButton");
+    button.click();
+  }
+  else if (event.which === 85) {
+    var button = $("#myFile");
+    button.click();
+  }
+  else if (event.which === 82) {
+    var button = $("#buttonRandom");
+    button.click();
+  }
+  else if (event.which === 71) {
+    var button = $("#buttonRandomD");
+    button.click();
+  }
+  else if (event.which === 83) {
+    var button = $("#go");
+    button.click();
+  }
+  else if (event.which === 49) {
+    $("#numGroup").val(1);
+  }
+  else if (event.which === 50) {
+    $("#numGroup").val(2);
+  }
+  else if (event.which === 51) {
+    $("#numGroup").val(3);
+  }
+  else if (event.which === 52) {
+    $("#numGroup").val(4);
+  }
+  else if (event.which === 53) {
+    $("#numGroup").val(5);
+  }
+  else if (event.which === 54) {
+    $("#numGroup").val(6);
+  }
+  //  JKLM
+  else if (event.which === 74) {
+    var now = (new Date()).toLocaleString();
+    $("#list").text(group[0]);
+    $("#success").text('快速群組 1 設定完成！'+ now);
+
+  }
+  else if (event.which === 75) {
+    var now = (new Date()).toLocaleString();
+    $("#list").text(group[1]);
+    $("#success").text('快速群組 2 設定完成！'+ now);
+  }
+  else if (event.which === 76) {
+    var now = (new Date()).toLocaleString();
+    $("#list").text(group[2]);
+    $("#success").text('快速群組 3 設定完成！'+ now);
+  }
+  else if (event.which === 72) {
+    var now = (new Date()).toLocaleString();
+    $("#list").text(group[3]);
+    $("#success").text('「分組」設定完成！'+ now);
+  }
+
+});
+</script>
+</body>
+</html>
