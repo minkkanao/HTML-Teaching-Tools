@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>倒數計時器</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <style>
+      .box {
+  border: 1px solid gray;
+  border-radius: 10px;
+  border-color: #484873;
+  padding: 15px;
+}
+.inputNum {
+  text-align: center;
+  width: 120px;
+  height: 40px;
+}
+.boxCenter {
+  margin: 15px auto;
+  border-top: 1px solid #484873;
+  border-bottom: 1px solid #484873;
+}
+.clearfix {
+  clear: both;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  margin: 20px auto;
+}
+.buttonNum {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0c4e8;
+  color: #484873;
+  font-size: 28px;
+  font-family: sans-serif;
+  font-weight: bold;
+  border: 1px dotted #2a2a2a;
+  border-radius: 3px;
+  border-color: #484873;
+  padding: 10px;
+  margin: 0 3%;
+  width: 22%;
+  height: 50px;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+.buttonShow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ecebff;
+  color: #484873;
+  font-size: 90px;
+  font-family: sans-serif;
+  font-weight: bold;
+  border-radius: 5px;
+  width: 94%;
+  height: 220px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+input {
+  background-color: #ecebff;
+  color: #000000;
+  font-size: 16px;
+  font-family: sans-serif;
+  border: 1.5px dotted #2a2a2a;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 20px;
+  width: 160px;
+  height: 15px;
+}
+go {
+  background-color: #ffffff;
+  color: #2a2a2a;
+  font-size: 16px;
+  font-family: sans-serif;
+  font-weight: normal;
+  border: 1px solid #2a2a2a;
+  border-radius: 5px;
+  padding: 10px;
+
+  width: 100px;
+  height: 20px;
+
+}
+.note {
+  margin-right: 15px;
+}
+.note1 {
+  letter-spacing: 2px;
+  font-weight: bold;
+  display: none;
+  color: #d763c3;
+}
+.note2 {
+  font-size: 30px;
+  font-weight: bold;
+}
+.time1 {
+  letter-spacing: 2px;
+  font-size: 12pt;
+  font-weight: bold;
+  display: none;
+  color: #d763c3;
+  margin-top: 20px;
+}
+.time2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+
+</style>
+
+</head>
+<body>
+<div class="box">
+  <div class="box1">
+    <input type="number" id="minutes" class="inputNum" placeholder="自訂時間" min="0" max="99">
+    <go id="start" class="go">GO</go>
+  </div>
+  <div class="clearfix"></div>
+  <div class="boxCenter">
+    <div class="center">
+      <button id="start1" class="buttonNum">１</button>
+      <button id="start3" class="buttonNum">３</button>
+      <button id="start5" class="buttonNum">５</button>
+      <button id="start10" class="buttonNum">１０</button>
+    </div>
+    <div id="countdown" class="buttonShow"></div>
+
+  </div>
+
+  <div class="note">
+    <div id="titleA" class="note1">距離第１大節下課</div>
+    <div id="countdownA" class="note2"></div>
+    <div id="titleB" class="note1">距離第２大節下課</div>
+    <div id="countdownB" class="note2"></div>
+    <div id="titleC" class="note1">距離第３大節下課</div>
+    <div id="countdownC" class="note2"></div>
+    <div id="titleD" class="note1">距離第４大節下課</div>
+    <div id="countdownD" class="note2"></div>
+    <div id="now" class="time1" align="right">現在時間</div>
+    <div id="timeNow" class="time2" align="right"></div>
+  </div>
+  
+</div>
+  <script>
+// 啟動倒數
+var timer;
+var interval = 1000;
+// 按鈕事件
+document.getElementById("start").addEventListener("click", function() {
+  clearInterval(timer1);
+  clearInterval(timer3);
+  clearInterval(timer5);
+  clearInterval(timer10);
+  clearInterval(timer);
+  // 參數設定
+  var count = -1;
+  var seconds = document.getElementById("minutes").value * 60 ;
+  timer = setInterval(function() {
+    count++;
+    var x = seconds - count;
+    var m = Math.floor( x/60 );
+    var s = x%60;
+    if ( s < 10 ){
+      s = '0' + s;
+    }
+    var print =  m + ' : ' + s;
+    document.getElementById("countdown").innerHTML = "<show>" + print + "</show>";
+    if ( x <= 0 ){
+      clearInterval(timer);
+    }
+  }, interval);
+});  
+
+var timer1;
+// 按鈕事件
+document.getElementById("start1").addEventListener("click", function() {
+  clearInterval(timer1);
+  clearInterval(timer3);
+  clearInterval(timer5);
+  clearInterval(timer10);
+  clearInterval(timer);
+  // 參數設定
+  var count = -1;
+  var seconds = 60 ;
+  timer1 = setInterval(function() {
+    count++;
+    var x = seconds - count;
+    var m = Math.floor( x/60 );
+    var s = x%60;
+    if ( s < 10 ){
+      s = '0' + s;
+    }
+    var print =  m + ' : ' + s;
+    document.getElementById("countdown").innerHTML = "<show>" + print + "</show>";
+    if ( x <= 0 ){
+      clearInterval(timer1);
+    }
+  }, interval);
+});  
+
+var timer3;
+// 按鈕事件
+document.getElementById("start3").addEventListener("click", function() {
+  clearInterval(timer1);
+  clearInterval(timer3);
+  clearInterval(timer5);
+  clearInterval(timer10);
+  clearInterval(timer);
+  // 參數設定
+  var count = -1;
+  var seconds = 180 ;
+  timer3 = setInterval(function() {
+    count++;
+    var x = seconds - count;
+    var m = Math.floor( x/60 );
+    var s = x%60;
+    if ( s < 10 ){
+      s = '0' + s;
+    }
+    var print =  m + ' : ' + s;
+    document.getElementById("countdown").innerHTML = "<show>" + print + "</show>";
+    if ( x <= 0 ){
+      clearInterval(timer3);
+    }
+  }, interval);
+});  
+var timer5;
+// 按鈕事件
+document.getElementById("start5").addEventListener("click", function() {
+  clearInterval(timer1);
+  clearInterval(timer3);
+  clearInterval(timer5);
+  clearInterval(timer10);
+  clearInterval(timer);
+  // 參數設定
+  var count = -1;
+  var seconds = 300 ;
+  timer5 = setInterval(function() {
+    count++;
+    var x = seconds - count;
+    var m = Math.floor( x/60 );
+    var s = x%60;
+    if ( s < 10 ){
+      s = '0' + s;
+    }
+    var print =  m + ' : ' + s;
+    document.getElementById("countdown").innerHTML = "<show>" + print + "</show>";
+    if ( x <= 0 ){
+      clearInterval(timer5);
+    }
+  }, interval);
+});
+
+var timer10;
+// 按鈕事件
+document.getElementById("start10").addEventListener("click", function() {
+  clearInterval(timer1);
+  clearInterval(timer3);
+  clearInterval(timer5);
+  clearInterval(timer10);
+  clearInterval(timer);
+  // 參數設定
+  var count = -1;
+  var seconds = 600 ;
+  timer10 = setInterval(function() {
+    count++;
+    var x = seconds - count;
+    var m = Math.floor( x/60 );
+    var s = x%60;
+    if ( s < 10 ){
+      s = '0' + s;
+    }
+    var print =  m + ' : ' + s;
+    document.getElementById("countdown").innerHTML = "<show>" + print + "</show>";
+    if ( x <= 0 ){
+      clearInterval(timer10);
+    }
+  }, interval);
+});  
+
+
+//  下課倒數
+
+const aida = 100;
+var pa = timeTurnToDateFormat(9,45);
+var pb = timeTurnToDateFormat(11,25);
+var pc = timeTurnToDateFormat(14,50);
+var pd = timeTurnToDateFormat(16,35);
+
+var timerA = setInterval(function() {
+  var now = new Date();
+  var x = (Date.parse(pa) - Date.parse(now))/1000;
+  if ( x < 0 || x > aida*60 ){ 
+    clearInterval(timerA);
+    return; 
+  }
+  $('#titleA').show();
+  var m = Math.floor( x/60 );
+  var s = x%60;
+  if ( s < 10 ){
+    s = '0' + s;
+  }
+  var print =  m + ' : ' + s;
+  document.getElementById("countdownA").innerHTML = "<show>" + print + "</show>";
+  if ( x <= 0 ){
+    clearInterval(timerA);
+  }
+}, interval);
+
+var timerB = setInterval(function() {
+  var now = new Date();
+  var x = (Date.parse(pb) - Date.parse(now))/1000;
+  if ( x < 0 || x > aida*60 ){ 
+    clearInterval(timerB);
+    return; 
+  }
+  $('#titleB').show();
+  var m = Math.floor( x/60 );
+  var s = x%60;
+  if ( s < 10 ){
+    s = '0' + s;
+  }
+  var print =  m + ' : ' + s;
+  document.getElementById("countdownB").innerHTML = "<show>" + print + "</show>";
+  if ( x <= 0 ){
+    clearInterval(timerB);
+  }
+}, interval);
+
+var timerC = setInterval(function() {
+  var now = new Date();
+  var x = (Date.parse(pc) - Date.parse(now))/1000;
+  if ( x < 0 || x > aida*60 ){ 
+    clearInterval(timerC);
+    return; 
+  }
+  $('#titleC').show();
+  var m = Math.floor( x/60 );
+  var s = x%60;
+  if ( s < 10 ){
+    s = '0' + s;
+  }
+  var print =  m + ' : ' + s;
+  document.getElementById("countdownC").innerHTML = "<show>" + print + "</show>";
+  if ( x <= 0 ){
+    clearInterval(timerC);
+  }
+}, interval);
+
+var timerD = setInterval(function() {
+  var now = new Date();
+  var x = (Date.parse(pd) - Date.parse(now))/1000;
+  if ( x < 0 || x > aida*60 ){ 
+    clearInterval(timerD);
+    return; 
+  }
+  $('#titleD').show();
+  var m = Math.floor( x/60 );
+  var s = x%60;
+  if ( s < 10 ){
+    s = '0' + s;
+  }
+  var print =  m + ' : ' + s;
+  document.getElementById("countdownD").innerHTML = "<show>" + print + "</show>";
+  if ( x <= 0 ){
+    clearInterval(timerD);
+  }
+}, interval);
+
+
+function timeTurnToDateFormat(hr,mi) {
+  var nowSet0 = new Date( (new Date()).toLocaleDateString() );
+  var time = hr*60*60*1000 + mi*60*1000;
+  var nowNum  = Date.parse(nowSet0) + time;   //  數字
+  var now = new Date(nowNum);
+  return now;
+}
+var countL = 0;
+var time = setInterval(function() {
+  countL++;
+  var now = new Date();
+  $('#now').show();
+  var print1 = now.toLocaleDateString();
+  var printT = now.toLocaleTimeString();
+  var print2 = printT.substring(0, printT.length-3 );
+  var numCh = ["一", "二", "三", "四", "五", "六", "日"];
+  var day = '（' + numCh[ now.getDay()-1 ] + '）';
+  var print3 = '<fo style="font-size: 12pt">' + day + "</fo>";
+  if ( countL%2 == 0 ){
+    var lam = '<lamb style="color:gray;font-size:5pt">○ </lamb>';
+  }
+  else {
+    var lam = '<lamb style="color:green;font-size:5pt">● </lamb>';
+  }
+  document.getElementById("timeNow").innerHTML = "<show>" + print3 + print1 + "<br>" + lam + print2 +"</show>";
+}, interval);
+</script>
+
+</body>
+</html>
